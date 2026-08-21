@@ -1,29 +1,67 @@
+# ========================================
+# 本草先生 .gitignore
+# ========================================
+
 # 原始数据(从思源笔记 + GitHub 仓库可重新拉取)
 raw/
+本草图鉴/
+本草书籍/
+本草笔记/
+思源笔记/
 
-# v0 试错目录(老的,113 MB)
+# 蒸馏试错目录(老的 6 个版本,各 ~113 MB)
 distill-output/
-
-# 5 个失败的试错版本(每个 ~113 MB)
 distill-output-v1/
 distill-output-v2/
 distill-output-v3/
 distill-output-v4/
 distill-output-v5/
+distill-output-v6/
 
-# 临时文件
+# data/ 里的可重建大文件(从 raw + lineage-skill 可重新生成)
+# 保留小文件:source_manifest.json, evidence_cards.jsonl (7.6MB), quality report
+data/text_sources/chunks.jsonl
+data/course_package.json
+data/course_package_build_report.json
+
+# references/ 里的可重建大文件
+# course_package.json 40MB 是 data/course_package.json 的副本,可重建
+references/course_package.json
+# 空 stub 文件(原 lineage-skill default 模板,本草先生不需要)
+references/course_digest.md
+references/concept_glossary.md
+references/quote_index.md
+references/study_paths.md
+references/full_transcript.md
+references/custom_role.md
+references/custom_workflows.md
+references/lesson_index.json
+
+# 开发工具与临时文件
+_tools/
 __pycache__/
 *.pyc
+*.pyo
 *.pid
 *.log
 *.DS_Store
 Thumbs.db
 worker.out
 worker.err
+worker.pid
 .env
 .env.local
-
-# IDE
 .idea/
 .vscode/
 *.swp
+*.swo
+*~
+
+# OS 生成
+.DS_Store
+desktop.ini
+
+# 备份文件
+*.bak
+*.tmp
+*.orig

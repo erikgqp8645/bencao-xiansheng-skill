@@ -1,0 +1,13 @@
+--- a/llm_client.py
++++ b/llm_client.py
+@@ -82,8 +82,9 @@ def call_text_llm(messages: list[dict[str, Any]]) -> str:
+                 json={
+                     "model": model,
+                     "messages": messages,
+-                    "temperature": 0.8,
++                    "temperature": 0.3,
+                     "max_tokens": max_tokens,
++                    "thinking": {"type": "disabled"},
+                 },
+                 timeout=(20, timeout),
+             )

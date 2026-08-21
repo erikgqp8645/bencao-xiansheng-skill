@@ -1,0 +1,66 @@
+--- a/text_sources.py
++++ b/text_sources.py
+@@ -148,49 +148,51 @@ def chunk_text(
+
+     chunks: list[dict[str, Any]] = []
+
+     def emit(start: int, end: int, piece: str) -> None:
+         chunk_index = len(chunks)
+         chunks.append(
+             {
+                 "chunk_id": stable_id(source_id, chunk_index, piece),
+                 "source_id": source_id,
+                 "source_path": source_path,
+                 "source_ref": source_ref,
+                 "chunk_index": chunk_index,
+                 "char_start": start,
+                 "char_end": end,
+                 "chars": len(piece),
+                 "approx_tokens": (len(piece) + 3) // 4,
+                 "content_sha256": sha256_hex(piece),
+                 "text": piece,
+             }
+         )
+
+     paragraphs = paragraph_spans(text)
+-    for p_start, p_end, p_value in paragraphs:
+-        # Single paragraph larger than max_chars: split it.
+-        if len(p_value) > max_chars:
+-            for s_start, s_end, s_piece in split_long_span(
+-                p_start, p_value, max_chars, overlap_chars
+-            ):
+-                emit(s_start, s_end, s_piece)
+-            continue
+-        # Each paragraph becomes its own chunk (or part of one if multiple fit).
+-        emit(p_start, p_end, p_value)
++    buf_text = ""
++    buf_start: int | None = None
++    buf_end: int = 0
++    for p_start, p_end, p_value in paragraphs:
++        # Single paragraph larger than max_chars: flush buffer then split the paragraph.
++        if len(p_value) > max_chars:
++            if buf_text:
++                emit(buf_start, buf_end, buf_text)
++                buf_text = ""
++                buf_start = None
++                buf_end = 0
++            for s_start, s_end, s_piece in split_long_span(
++                p_start, p_value, max_chars, overlap_chars
++            ):
++                emit(s_start, s_end, s_piece)
++            continue
++        # If adding this paragraph would overflow max_chars, flush current buffer first.
++        separator = "\n\n" if buf_text else ""
++        if buf_text and len(buf_text) + len(separator) + len(p_value) > max_chars:
++            emit(buf_start, buf_end, buf_text)
++            buf_text = p_value
++            buf_start = p_start
++            buf_end = p_end
++        else:
++            if not buf_text:
++                buf_start = p_start
++            buf_text = buf_text + separator + p_value
++            buf_end = p_end
++    if buf_text:
++        emit(buf_start, buf_end, buf_text)
+     return chunks
