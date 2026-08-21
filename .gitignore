@@ -1,0 +1,29 @@
+# 原始数据(从思源笔记 + GitHub 仓库可重新拉取)
+raw/
+
+# v0 试错目录(老的,113 MB)
+distill-output/
+
+# 5 个失败的试错版本(每个 ~113 MB)
+distill-output-v1/
+distill-output-v2/
+distill-output-v3/
+distill-output-v4/
+distill-output-v5/
+
+# 临时文件
+__pycache__/
+*.pyc
+*.pid
+*.log
+*.DS_Store
+Thumbs.db
+worker.out
+worker.err
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
